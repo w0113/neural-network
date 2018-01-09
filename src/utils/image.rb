@@ -1,7 +1,7 @@
 require "chunky_png"
 require "matrix"
 
-module Digits
+module Utils
 
   class Image
 

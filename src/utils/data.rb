@@ -2,7 +2,7 @@ require "chunky_png"
 
 require_relative "image.rb"
 
-module Digits
+module Utils
 
   module Data
 

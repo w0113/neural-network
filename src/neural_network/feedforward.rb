@@ -2,9 +2,9 @@
 require "distribution"
 require "matrix"
 
-module Digits
+module NeuralNetwork
 
-  class NeuralNetwork
+  class Feedforward
 
     def initialize(layout)
       @wheights = []
