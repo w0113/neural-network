@@ -11,13 +11,13 @@ module NeuralNetwork
       @bias = []
 
       grng = Distribution::Normal.rng
-      layout[0..-2].zip(layout[1..-1]).each do |inputs, num_of_neurons|
-        @wheights << Matrix.build(num_of_neurons, inputs){grng.call}
+      layout[0..-2].zip(layout[1..-1]).each do |num_of_inputs, num_of_neurons|
+        @wheights << Matrix.build(num_of_neurons, num_of_inputs){grng.call}
         @bias << Vector.elements(Array.new(num_of_neurons){grng.call})
       end
     end
 
-    def feed_forward(activations)
+    def process(activations)
       as, zs = [], []
       a = Vector.elements activations
       as << a
@@ -32,13 +32,25 @@ module NeuralNetwork
     end
 
     def backpropagation(activations, correct)
-      as, zs = feed_forward activations
+      # Calculate the output of the neural network
+      as, zs = process activations
 
+      # Calculate the output error
       errors = [(as.last - correct).map2(zs.last.map{|v| sig_prime v}){|a, b| a * b}]
+      # Backpropagate the error to the hidden layers
       (as.size - 2).downto(1).each do |i|
         errors.unshift((@wheights[i].transpose * errors.first).map2(zs[i].map{|v| sig_prime v}){|a, b| a * b})
       end
       
+      # Calculate the gradient of the cost function for each bias vector and each wheight matrix
+      gc_bias = errors
+      gc_wheights = []
+      errors.each_with_index do |e, i|
+        gc_wheights << Matrix[*e.to_a.map{|v| (as[i] * v).to_a}]
+      end
+
+      # Return both in an array
+      return [gc_wheights, gc_bias]
     end
 
     def sig(t)
