@@ -12,10 +12,11 @@ FILE_TRAIN_LABELS = DATA_DIR + "train-labels-idx1-ubyte"
 
 printf "Loading Images... "
 #train_images = Utils::Data.load(FILE_TRAIN_IMAGES, FILE_TRAIN_LABELS)
-test_images = Utils::Data.load(FILE_TEST_IMAGES, FILE_TEST_LABELS)
+#test_images = Utils::Data.load(FILE_TEST_IMAGES, FILE_TEST_LABELS)
 puts "finished"
 nn = NeuralNetwork::Feedforward.new [28 * 28, 30, 10]
-gc_wheights, _ = nn.backpropagation(test_images.first.vpixels, test_images.first.vlabel)
-puts gc_wheights.last.column_size, gc_wheights.last.row_size
+nn.update_mini_batch(nil, nil)
+#gc_wheights, _ = nn.backpropagation(test_images.first.vpixels, test_images.first.vlabel)
+#puts gc_wheights.last.column_size, gc_wheights.last.row_size
 puts "finished"
 

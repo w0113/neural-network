@@ -53,6 +53,21 @@ module NeuralNetwork
       return [gc_wheights, gc_bias]
     end
 
+    def update_mini_batch(batch, eta)
+      delta_wheights = @wheights.map{|m| Matrix.build(m.row_size, m.column_size){0.0}}
+      delta_bias = @bias.map{|v| Vector.elements(Array.new(v.size){0.0})}
+
+      batch.each do |b|
+        gc_wheights, gc_bias = backpropagation(b.vpixels, b.vlabel)
+        delta_wheights.map.with_index{|m, i| m + gc_wheights[i]}
+        delta_bias.map.with_index{|v, i| v + gc_bias[i]}
+      end
+
+      aeta = eta / batch.size.to_f
+      @wheights.map!.with_index{|m, i| m - (delta_wheights[i] * aeta)}
+      @bias.map!.with_index{|v, i| v - (delta_bias[i] * aeta)}
+    end
+
     def sig(t)
       return 1.0 / (1.0 + Math.exp(-t))
     end
